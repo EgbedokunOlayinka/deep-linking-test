@@ -2,6 +2,8 @@ export type TabIndexType = 'DetailOne' | 'DetailTwo' | 'DetailThree';
 
 export type AppStackType = {
   Home: undefined;
+  Onboarding: undefined;
+  OnboardingTwo: undefined;
   Details: {tabIndex: TabIndexType; event: number};
 };
 

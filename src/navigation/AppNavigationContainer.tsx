@@ -8,6 +8,8 @@ import OptionBtn from '../components/OptionBtn';
 import {useDetail} from '../providers/DetailProvider/DetailContext';
 import DetailsTabNav from '../screens/details.tab';
 import HomeScreen from '../screens/home.screen';
+import OnboardingScreen from '../screens/onboarding.screen';
+import OnboardingTwoScreen from '../screens/onboardingTwo.screen';
 import {AppStackType, TabIndexType} from '../types';
 
 const linking = {
@@ -43,7 +45,17 @@ const AppNavigationContainer = () => {
       onStateChange={handleStateChange}>
       <Stack.Navigator
         screenOptions={{headerShown: true}}
-        initialRouteName={'Home'}>
+        initialRouteName={'OnboardingTwo'}>
+        <Stack.Screen
+          name="Onboarding"
+          component={OnboardingScreen}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="OnboardingTwo"
+          component={OnboardingTwoScreen}
+          options={{headerShown: false}}
+        />
         <Stack.Screen name="Home" component={HomeScreen} />
         <Stack.Screen
           name="Details"

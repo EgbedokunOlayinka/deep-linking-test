@@ -1,6 +1,6 @@
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import React, {useCallback} from 'react';
-import {Linking, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {AppStackType, TabIndexType} from '../types';
 
 type Props = React.FC<{
@@ -48,10 +48,6 @@ const HomeScreen: Props = ({navigation}) => {
           </TouchableOpacity>
         </View>
       ))}
-
-      {/* <TouchableOpacity onPress={testLink}>
-        <Text>testser</Text>
-      </TouchableOpacity> */}
     </View>
   );
 };
@@ -59,7 +55,7 @@ const HomeScreen: Props = ({navigation}) => {
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
-    // justifyContent: 'center',
+    justifyContent: 'center',
     alignItems: 'center',
     padding: 16,
   },
