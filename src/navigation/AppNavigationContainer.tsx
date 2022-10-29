@@ -9,6 +9,7 @@ import {useDetail} from '../providers/DetailProvider/DetailContext';
 import DetailsTabNav from '../screens/details.tab';
 import HomeScreen from '../screens/home.screen';
 import OnboardingScreen from '../screens/onboarding.screen';
+import OnboardingThreeScreen from '../screens/onboardingThree.screen';
 import OnboardingTwoScreen from '../screens/onboardingTwo.screen';
 import {AppStackType, TabIndexType} from '../types';
 
@@ -45,7 +46,7 @@ const AppNavigationContainer = () => {
       onStateChange={handleStateChange}>
       <Stack.Navigator
         screenOptions={{headerShown: true}}
-        initialRouteName={'OnboardingTwo'}>
+        initialRouteName={'OnboardingThree'}>
         <Stack.Screen
           name="Onboarding"
           component={OnboardingScreen}
@@ -54,6 +55,11 @@ const AppNavigationContainer = () => {
         <Stack.Screen
           name="OnboardingTwo"
           component={OnboardingTwoScreen}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="OnboardingThree"
+          component={OnboardingThreeScreen}
           options={{headerShown: false}}
         />
         <Stack.Screen name="Home" component={HomeScreen} />

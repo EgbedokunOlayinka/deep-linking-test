@@ -9,11 +9,12 @@ import {
   Animated,
   Platform,
   UIManager,
-  LayoutAnimation,
   Image,
   PanResponder,
+  Dimensions,
 } from 'react-native';
 import {AppStackType} from '../types';
+const {width, height} = Dimensions.get('screen');
 
 const imgOne = require('../assets/images/edo-logo-bg.png');
 const imgTwo = require('../assets/images/kogi-logo-bg.jpeg');
@@ -33,12 +34,12 @@ if (
 }
 
 interface Props {
-  navigation: NativeStackNavigationProp<AppStackType, 'OnboardingTwo'>;
+  navigation: NativeStackNavigationProp<AppStackType, 'OnboardingThree'>;
 }
 
-const OnboardingTwoScreen: React.FC<Props> = ({navigation}) => {
-  const navToThree = useCallback(() => {
-    navigation.navigate('OnboardingThree');
+const OnboardingThreeScreen: React.FC<Props> = ({navigation}) => {
+  const navToTwo = useCallback(() => {
+    navigation.navigate('OnboardingTwo');
   }, [navigation]);
 
   const [stage, setStage] = useState(0);
@@ -46,6 +47,8 @@ const OnboardingTwoScreen: React.FC<Props> = ({navigation}) => {
   const dotOne = useRef(new Animated.Value(0)).current;
   const dotTwo = useRef(new Animated.Value(0)).current;
   const dotThree = useRef(new Animated.Value(0)).current;
+
+  const refX = useRef(new Animated.Value(0)).current;
 
   const moveRight = useCallback(
     (val: number) => {
@@ -117,43 +120,21 @@ const OnboardingTwoScreen: React.FC<Props> = ({navigation}) => {
     [dotOne, dotTwo, dotThree],
   );
 
-  const layoutShiftForward = () => {
-    LayoutAnimation.configureNext({
+  const calcOffsetMoveForward = useCallback(() => {
+    Animated.timing(refX, {
+      toValue: (stage + 1) * width,
       duration: 300,
-      create: {
-        type: LayoutAnimation.Types.linear,
-        property: LayoutAnimation.Properties.opacity,
-      },
-      update: {
-        type: LayoutAnimation.Types.linear,
-        property: LayoutAnimation.Properties.opacity,
-      },
-      delete: {
-        type: LayoutAnimation.Types.linear,
-        property: LayoutAnimation.Properties.opacity,
-        // delay: 1500,
-      },
-    });
-  };
+      useNativeDriver: true,
+    }).start();
+  }, [refX, stage]);
 
-  const layoutShiftBackward = () => {
-    LayoutAnimation.configureNext({
+  const calcOffsetMoveBackward = useCallback(() => {
+    Animated.timing(refX, {
+      toValue: (stage - 1) * width,
       duration: 300,
-      create: {
-        type: LayoutAnimation.Types.linear,
-        property: LayoutAnimation.Properties.opacity,
-      },
-      update: {
-        type: LayoutAnimation.Types.linear,
-        property: LayoutAnimation.Properties.opacity,
-      },
-      delete: {
-        type: LayoutAnimation.Types.linear,
-        property: LayoutAnimation.Properties.opacity,
-        // delay: 1500,
-      },
-    });
-  };
+      useNativeDriver: true,
+    }).start();
+  }, [refX, stage]);
 
   const pan = useRef(new Animated.ValueXY()).current;
 
@@ -168,13 +149,12 @@ const OnboardingTwoScreen: React.FC<Props> = ({navigation}) => {
       },
       onPanResponderRelease: (evt, gestureState) => {
         if (gestureState.dx < 0) {
-          // if the user swipes to the left to move forward
           if (stage === 2) {
             return;
           }
 
-          // this function uses layout animation to transition to the next screen
-          layoutShiftForward();
+          // this function animates the calculation of the view offset x
+          calcOffsetMoveForward();
 
           // this function animates the movement of the colored dot to the right
           moveRight(stage);
@@ -182,13 +162,12 @@ const OnboardingTwoScreen: React.FC<Props> = ({navigation}) => {
           // this function updates the stage state
           setStage(prev => prev + 1);
         } else if (gestureState.dx > 0) {
-          // if the user swipes to the right to move backward
           if (stage === 0) {
             return;
           }
 
-          // this function uses layout animation to transition to the previous screen
-          layoutShiftBackward();
+          // this function animates the calculation of the view offset x
+          calcOffsetMoveBackward();
 
           // this function animates the movement of the colored dot to the left
           moveLeft(stage);
@@ -198,24 +177,44 @@ const OnboardingTwoScreen: React.FC<Props> = ({navigation}) => {
         }
       },
     });
-  }, [stage, pan, moveLeft, moveRight]);
+  }, [
+    stage,
+    pan,
+    moveLeft,
+    moveRight,
+    calcOffsetMoveBackward,
+    calcOffsetMoveForward,
+  ]);
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.titleText}>Layout Animation</Text>
+      <Text style={styles.titleText}>Interpolation</Text>
 
       <Animated.View style={styles.swipeWrapper} {...panResponder.panHandlers}>
-        {screenData.map(
-          (screen, index) =>
-            index === stage && (
-              <Animated.View key={screen.color} style={[styles.box]}>
-                <View style={styles.imgView}>
-                  <Image source={screen.img} />
-                </View>
-                <Text style={styles.imgText}>{screen.text}</Text>
-              </Animated.View>
-            ),
-        )}
+        {screenData.map((screen, index) => {
+          const inputRange = [
+            (index - 1) * width,
+            index * width,
+            (index + 1) * width,
+          ];
+
+          // using interpolation of the refX value to animate the opacity of each view
+          const opacity = refX.interpolate({
+            inputRange,
+            outputRange: [0, 1, 0],
+          });
+
+          return (
+            <Animated.View
+              key={screen.color}
+              style={[StyleSheet.absoluteFillObject, styles.box, {opacity}]}>
+              <View style={styles.imgView}>
+                <Image source={screen.img} />
+              </View>
+              <Text style={styles.imgText}>{screen.text}</Text>
+            </Animated.View>
+          );
+        })}
       </Animated.View>
 
       <View style={styles.dotContainer}>
@@ -234,8 +233,8 @@ const OnboardingTwoScreen: React.FC<Props> = ({navigation}) => {
         />
       </View>
 
-      <TouchableOpacity style={styles.btn} onPress={navToThree}>
-        <Text style={styles.btnText}>Go to Interpolation</Text>
+      <TouchableOpacity style={styles.btn} onPress={navToTwo}>
+        <Text style={styles.btnText}>Go to Layout Animation</Text>
       </TouchableOpacity>
     </SafeAreaView>
   );
@@ -269,7 +268,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     flex: 1,
-    marginBottom: 12,
+    // marginBottom: 12,
     borderRadius: 4,
   },
   text: {
@@ -319,7 +318,8 @@ const styles = StyleSheet.create({
     flex: 1,
     width: '100%',
     paddingHorizontal: 16,
+    // borderWidth: 1,
   },
 });
 
-export default OnboardingTwoScreen;
+export default OnboardingThreeScreen;

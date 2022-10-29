@@ -4,6 +4,7 @@ export type AppStackType = {
   Home: undefined;
   Onboarding: undefined;
   OnboardingTwo: undefined;
+  OnboardingThree: undefined;
   Details: {tabIndex: TabIndexType; event: number};
 };
 
