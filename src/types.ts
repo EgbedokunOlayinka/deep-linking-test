@@ -6,6 +6,7 @@ export type AppStackType = {
   OnboardingTwo: undefined;
   OnboardingThree: undefined;
   Details: {tabIndex: TabIndexType; event: number};
+  SwipeTest: undefined;
 };
 
 export type AppTabType = {

@@ -11,6 +11,7 @@ import HomeScreen from '../screens/home.screen';
 import OnboardingScreen from '../screens/onboarding.screen';
 import OnboardingThreeScreen from '../screens/onboardingThree.screen';
 import OnboardingTwoScreen from '../screens/onboardingTwo.screen';
+import SwipeTestScreen from '../screens/swipeTest.screen';
 import {AppStackType, TabIndexType} from '../types';
 
 const linking = {
@@ -46,7 +47,7 @@ const AppNavigationContainer = () => {
       onStateChange={handleStateChange}>
       <Stack.Navigator
         screenOptions={{headerShown: true}}
-        initialRouteName={'OnboardingThree'}>
+        initialRouteName={'SwipeTest'}>
         <Stack.Screen
           name="Onboarding"
           component={OnboardingScreen}
@@ -63,6 +64,7 @@ const AppNavigationContainer = () => {
           options={{headerShown: false}}
         />
         <Stack.Screen name="Home" component={HomeScreen} />
+        <Stack.Screen name="SwipeTest" component={SwipeTestScreen} />
         <Stack.Screen
           name="Details"
           component={DetailsTabNav}
